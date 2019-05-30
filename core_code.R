@@ -109,6 +109,18 @@ for (i in 1:nrow(movies)) {
   movies[i,]$sentiment = joy_count 
 }
 
+new_data = c()
+for (i in 1:nrow(movies)) {
+  print(i)
+  genres_this_movie = gsub("\'","\"",movies[i,]$genres) 
+  genres_this_movie = fromJSON(genres_this_movie)
+  if (length(genres_this_movie)>0) {     
+    new_data = rbind(new_data,data.frame(title=movies[i,]$original_title,
+                                         genre=genres_this_movie$name,
+                                         sentiment=movies[i,]$sentiment)) 
+  }
+}
+
 # top 20 positivity...
 top_20 = sort(movies$sentiment,decreasing=TRUE,index=TRUE)$ix[1:20] # this is the row index in our main data
 subset(movies[top_20,],select=c(original_title,sentiment))

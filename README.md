@@ -1,5 +1,6 @@
-# Science of the Language of
-# Entertainment
+Science of the Language of
+Inline-style: 
+![alt text](https://co-mind.org/comm-130/entertain.png "Entertainment Image Fun")
 
 The goal of this exercise is to get you setup in RStudio and gain some first-hand experience at data science, specifically analysis of language patterns in entertainment-relevant media. In this exercise, I will showcase how to obtain, process, and analyze data about recent films, including data about film revenue and more. Let's begin by installing R and RStudio (you need both).
 
@@ -106,7 +107,6 @@ Let's extract genre from our movies, and also store for each movie its correspon
 
 We're gonna use a `for` loop again, going through each movie, extracting genre, and storing revenue associated with that movie. 
 
-
 ```r
 
 new_data = c()
@@ -154,7 +154,7 @@ This is a sentiments dictionary inside `tidytext`, available for free and fairly
 ```r
 
 joy_words = get_sentiments("nrc")[get_sentiments("nrc")$sentiment=="joy",]$word
-movies$sentiment = -999999 # let's create a new column and initialize it to -99999
+movies$sentiment = -999999 
 for (i in 1:nrow(movies)) {
   print(i)
   overview_words = get_word_tokens(movies[i,]$overview)
@@ -168,10 +168,32 @@ This looks more complicated than it actually is. The first line gets us a new va
 
 As above, we loop through all of our thousands of movies. First, we gather all the words from a movie's overview. Then we take the sum of how many "joy" words appear in this overview. We store this as a sentiment by adding it into our movies spreadsheet using the line `movies[i,]$sentiment = joy_count`.
 
-Now we can see which movie genres are more or less positive. We can redo something similar that we did above... aggregating our data by genre!
+Now we can see which movie genres are more or less positive. We can redo something similar that we did above... aggregating our data by genre! (Note: to make this more LIWCy, we should take a percentage of joy words; I skip that step here.)
 
+```r
 
+new_data = c()
+for (i in 1:nrow(movies)) {
+  print(i)
+  genres_this_movie = gsub("\'","\"",movies[i,]$genres) 
+  genres_this_movie = fromJSON(genres_this_movie)
+  if (length(genres_this_movie)>0) {     
+    new_data = rbind(new_data,data.frame(title=movies[i,]$original_title,
+                                         genre=genres_this_movie$name,
+                                         sentiment=movies[i,]$sentiment)) 
+  }
+}
 
+```
 
+Note the simple code change. We have simply added `sentiment` inside here instead of `revenue` as we did before. We can also run exactly the same plotting with `barplot`:
+
+```r
+
+summary_data = aggregate(sentiment~genre,data=new_data,FUN=mean)
+barplot(legend.text=summary_data$genre,height=summary_data$sentiment,
+        col=rainbow(n=nrow(summary_data)),ylab='Positivity (count)',xlab='Genre')
+
+```
 
 

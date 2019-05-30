@@ -1,5 +1,4 @@
 Science of the Language of
-Inline-style: 
 ![alt text](https://co-mind.org/comm-130/entertain.png "Entertainment Image Fun")
 
 The goal of this exercise is to get you setup in RStudio and gain some first-hand experience at data science, specifically analysis of language patterns in entertainment-relevant media. In this exercise, I will showcase how to obtain, process, and analyze data about recent films, including data about film revenue and more. Let's begin by installing R and RStudio (you need both).
@@ -47,13 +46,14 @@ I've already downloaded and filtered this dataset for you. You can load it up wi
 
 movies = read.csv('https://co-mind.org/comm-130/movies_metadata.csv',stringsAsFactors=FALSE)
 movies = movies[movies$adult=='False',]
+movies = movies[movies$popularity>2,]
 movies = movies[movies$release_date!="",] 
 movies = movies[as.numeric(substr(movies$release_date,1,4))>2010,] 
 dim(movies) 
 
 ```
 
-The first line of code loads the dataset from the internet, the next few filter out adult movies (yup), any movie without a release date, and then filters the data set down to only the most recent films, after 2010. The `dim` function then tells us how many movies we have. Over 10,000 to analyze! Nice. This whole process here illustrates two critical things. First, we must appreciate the kind generosity of projects like MovieLens and others -- the availability of such data sets is amazing. So, we have data. The second is that often the first part of analysis is carrying out a "cleansing" of the data. Removing items we don't want. Finding items that don't have needed info (e.g., release date) and managing our data to get it into shape for analysis.
+The first line of code loads the dataset from the internet, the next few filter out adult movies (yup), more popular movies, any movie without a release date, and then filters the data set down to only the most recent films, after 2010. The `dim` function then tells us how many movies we have. Over 4,000 to analyze! Nice. This whole process here illustrates two critical things. First, we must appreciate the kind generosity of projects like MovieLens and others -- the availability of such data sets is amazing. So, we have data. The second is that often the first part of analysis is carrying out a "cleansing" of the data. Removing items we don't want. Finding items that don't have needed info (e.g., release date) and managing our data to get it into shape for analysis.
 
 Anyway, onward.
 

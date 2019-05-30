@@ -25,10 +25,11 @@ Line 1 to run in RStudio's command console:
 source('https://raw.githubusercontent.com/racdale/entertainment-1/master/functions.R')
 ```
 
-Now, after doing that, let's install some libraries we'll need... R is replete with resources that other have created, and for the most part give away for free. It's astounding. We'll need a few libraries for our demo here:
+Now, after doing that, let's install some libraries we'll need... R is replete with resources that others have created, and for the most part give away for free. It's astounding. We'll need a few libraries for our demo here:
 
 ```r
 
+# 1
 install.packages('jsonlite')
 install.packages('tidytext')
 library(jsonlite)
@@ -46,6 +47,7 @@ I've already downloaded and filtered this dataset for you. You can load it up wi
 
 ```r
 
+# 2
 movies = read.csv('https://co-mind.org/comm-130/movies_metadata.csv',stringsAsFactors=FALSE)
 movies = movies[movies$adult=='False',]
 movies = movies[movies$popularity>2,]
@@ -61,10 +63,11 @@ Anyway, onward.
 
 ## Understanding the data, and extracting genres
 
-Let's take a peek inside our data so we know what we have. These two very simple lines of code show us the 1253th row of our movie data... and then show us the names of the columns of our data. You can think of the `movies` variable here as a kind of spreadsheet, with rows and columns! Really, intuitively, it is simply a souped up Excel spreadsheet, but loaded on your computer in R.
+Let's take a peek inside our data so we know what we have. These two very simple lines of code show us the 2nd row of our movie data... and then show us the names of the columns of our data. You can think of the `movies` variable here as a kind of spreadsheet, with rows and columns! Really, intuitively, it is simply a souped up Excel spreadsheet, but loaded on your computer in R.
 
 ```r
 
+# 3
 movies[2,]
 colnames(movies) 
 
@@ -76,6 +79,7 @@ Let's order our data sheet... using this code here:
 
 ```r
 
+# 4
 top_20 = sort(movies$revenue,decreasing=TRUE,index=TRUE)$ix[1:20] 
 subset(movies[top_20,],select=c(original_title,revenue))
 
@@ -87,6 +91,7 @@ Okay, let's slam on the gas pedal here. What genres are in our dataset? How comm
 
 ```r
 
+# 5
 all_genres = c()
 for (i in 1:nrow(movies)) { 
   print(i)
@@ -111,6 +116,7 @@ We're gonna use a `for` loop again, going through each movie, extracting genre, 
 
 ```r
 
+# 6
 new_data = c()
 for (i in 1:nrow(movies)) {
   print(i)
@@ -131,6 +137,7 @@ Now we will use some fun plotting to look at our averages. Which genre seems to 
 
 ```r
 
+# 7
 summary_data = aggregate(revenue~genre,data=new_data,FUN=mean)
 barplot(height=summary_data$revenue,
         col=1:nrow(summary_data),ylab='$',xlab='Genre')
@@ -151,6 +158,7 @@ The above code is basic movie data. Revenue. Popularity. Etc. But we do have som
 
 ```r
 
+# 8
 sentiments
 
 ```
@@ -159,6 +167,7 @@ This is a sentiments dictionary inside `tidytext`, available for free and fairly
 
 ```r
 
+# 8
 joy_words = get_sentiments("nrc")[get_sentiments("nrc")$sentiment=="joy",]$word
 movies$sentiment = -999999 
 for (i in 1:nrow(movies)) {
@@ -178,6 +187,7 @@ Now we can see which movie genres are more or less positive. We can redo somethi
 
 ```r
 
+# 9
 new_data = c()
 for (i in 1:nrow(movies)) {
   print(i)
@@ -196,6 +206,7 @@ Note the simple code change. We have simply added `sentiment` inside here instea
 
 ```r
 
+# 10
 summary_data = aggregate(sentiment~genre,data=new_data,FUN=mean)
 barplot(height=summary_data$sentiment,
         col=1:nrow(summary_data),ylab='Positivity (count)',xlab='Genre')
@@ -214,6 +225,7 @@ Wanna try some other sentiments? Pretty easy. You just have to chnage the `joy_w
 
 ```r
 
+# 11
 unique(get_sentiments("nrc")$sentiment)
 
 ```
@@ -224,6 +236,7 @@ Does positivity relate to revenue or popularity? This is easy to check with a qu
 
 ```r
 
+# 11
 plot(movies$sentiment,as.numeric(movies$popularity))
 cor.test(movies$sentiment,as.numeric(movies$popularity))
 
@@ -237,6 +250,7 @@ So we've done some elementary semantic analysis of a movie's plot summary and as
 
 ```r
 
+# 12
 elp = read.csv('https://co-mind.org/comm-130/elp_full.csv',stringsAsFactors=FALSE)
 
 ```
@@ -245,6 +259,7 @@ Now let's loop through our 4K movies, and integrate the ELP's RT measures as we 
 
 ```r
 
+# 12
 movies$avg_RT = -999999 
 for (i in 1:nrow(movies)) {
   print(i)

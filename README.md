@@ -250,7 +250,7 @@ for (i in 1:nrow(movies)) {
   print(i)
   overview_words = get_word_tokens(movies[i,]$overview)
   RTs = c()
-  for (word in overview_words) {
+  for (word in overview_words[1:min(length(overview_words),20)]) {
   	if (word %in% elp$Word) {
   		RTs = c(RTs,as.numeric(elp[elp$Word==word,]$I_Mean_RT))
   	} 
@@ -258,9 +258,11 @@ for (i in 1:nrow(movies)) {
   movies[i,]$avg_RT = mean(RTs) 
 }
 
+hist(movies$avg_RT)
+
 ```
 
-Depending on the speed of your computer, this might take a few minutes to run.
+Depending on the speed of your computer, this might take a few minutes to run. To speed it up, we are restricting our analysis to just 20 initial words of the overview. You can modify this code and let it run longer; for our purposes keeping it efficient helps.
 
 (Note: This uses what is called a "nested for loop." It is highly inefficient and as you can tell takes a long time. It is, however, intuitive: We are looping through movies, and then looping through its words to store the RT. Again I recommend checking out `dplyr` to illustrate new ways of speeding this up.)
 

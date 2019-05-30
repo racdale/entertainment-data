@@ -36,6 +36,8 @@ library(tidytext)
 
 ```
 
+(Note: once you run the `install.packages` lines above, just once, you don't have to run those again. However if you restart RStudio then you do have to rerun the `library` lines, to reload these packages.)
+
 ## Now, let's get some data...
 
 During her visit, Dr. Tabatabaeian made an off-hand reference to "Kaggle." Kaggle.com is a prominent data science and programming community in which students and other researchers can compete to solve puzzles or generate ideas. These ideas are based on data that companies and other organizations give away. In fact, Kaggle.com is filled with entertainment relevant media. [Click here to see a list](https://www.kaggle.com/datasets?tags=8303-entertainment). We're gonna analyze a MovieLens dataset, filled with interesting information. You can read more about it at [this link](https://www.kaggle.com/rounakbanik/the-movies-dataset?). 
@@ -63,12 +65,12 @@ Let's take a peek inside our data so we know what we have. These two very simple
 
 ```r
 
-movies[1,]
+movies[2,]
 colnames(movies) 
 
 ```
 
-Lots of interesting information! Revenue! Popularity! Etc.
+The first line there shows us the second row in our data sheet. The second line of code shows us all the columns in the sheet. Lots of interesting information! Revenue! Popularity! Etc.
 
 Let's order our data sheet... using this code here:
 
@@ -123,15 +125,19 @@ for (i in 1:nrow(movies)) {
 
 ```
 
-This might take a while to run. Again, check out `dplyr` in the future for a faster (but much less intuitive) approach. In this code, we are looping over 10K times, each `for` loop we extract the title of the movie, its genres, and its associated revenue. We create a brand-new data sheet called `new_data`, adding to it as we go along. That's what the code does.
+This might take a while to run. Again, check out `dplyr` in the future for a faster (but much less intuitive) approach. In this code, we are looping over 4K times, each `for` loop we extract the title of the movie, its genres, and its associated revenue. We create a brand-new data sheet called `new_data`, adding to it as we go along. That's what the code does.
 
 Now we will use some fun plotting to look at our averages. Which genre seems to have the highest average revenue?
 
 ```r
 
 summary_data = aggregate(revenue~genre,data=new_data,FUN=mean)
-barplot(legend.text=summary_data$genre,height=summary_data$revenue,
-        col=rainbow(n=nrow(summary_data)),ylab='$',xlab='Genre')
+barplot(height=summary_data$revenue,
+        col=1:nrow(summary_data),ylab='$',xlab='Genre')
+legend("topright", 
+       legend=summary_data$genre,
+       fill=1:nrow(summary_data), ncol = 2,
+       cex=0.6)
 
 ```
 
@@ -191,9 +197,73 @@ Note the simple code change. We have simply added `sentiment` inside here instea
 ```r
 
 summary_data = aggregate(sentiment~genre,data=new_data,FUN=mean)
-barplot(legend.text=summary_data$genre,height=summary_data$sentiment,
-        col=rainbow(n=nrow(summary_data)),ylab='Positivity (count)',xlab='Genre')
+barplot(height=summary_data$sentiment,
+        col=1:nrow(summary_data),ylab='Positivity (count)',xlab='Genre')
+legend("topright", 
+       legend=summary_data$genre,
+       fill=1:nrow(summary_data), ncol = 2,
+       cex=0.6)
 
 ```
+
+Which one is most positive? 
+
+## Extending the sentiment analysis
+
+Wanna try some other sentiments? Pretty easy. You just have to chnage the `joy_words` variable above to point to something else. Try this line out and you can see all the sentiments inside the "nrc" dictionary:
+
+```r
+
+unique(get_sentiments("nrc")$sentiment)
+
+```
+
+By slight adjustment to the code, you can easily explore "trust" concepts, or "anticipation." Etc.
+
+Does positivity relate to revenue or popularity? This is easy to check with a quick graphing of our data. Try this out. We can easily generate a scatterplot.
+
+```r
+
+plot(movies$sentiment,as.numeric(movies$popularity))
+cor.test(movies$sentiment,as.numeric(movies$popularity))
+
+```
+
+Yow. Curious. What do you make of this? The second line just beneath this gives you the correlation value between sentiment and popularity. How about revenue? You can easily change the variable in this function to `movies$revenue`. Party.
+
+## Integrating ELP data...
+
+So we've done some elementary semantic analysis of a movie's plot summary and associated it, if loosely, to metrics for that media item. How about some other measures of processing fluency we've discussed? One strategy here is to use a list of words we have on hand already: the ELP! Our movie data gives us an overview. Does the processability of the concepts inside that overview offer useful measures? We can try it here. First, let's get a representations of the ELP as a new data sheet. I've prepared a link for you:
+
+```r
+
+elp = read.csv('https://co-mind.org/comm-130/elp_full.csv',stringsAsFactors=FALSE)
+
+```
+
+Now let's loop through our 4K movies, and integrate the ELP's RT measures as we go along. We can take the average RT for a movie's overview. This could be seen as a very rough proxy of how "processable" the story's plot summary is overall. This code will look familiar:
+
+```r
+
+movies$avg_RT = -999999 
+for (i in 1:nrow(movies)) {
+  print(i)
+  overview_words = get_word_tokens(movies[i,]$overview)
+  RTs = c()
+  for (word in overview_words) {
+  	if (word %in% elp$Word) {
+  		RTs = c(RTs,as.numeric(elp[elp$Word==word,]$I_Mean_RT))
+  	} 
+  }
+  movies[i,]$avg_RT = mean(RTs) 
+}
+
+```
+
+Depending on the speed of your computer, this might take a few minutes to run.
+
+(Note: This uses what is called a "nested for loop." It is highly inefficient and as you can tell takes a long time. It is, however, intuitive: We are looping through movies, and then looping through its words to store the RT. Again I recommend checking out `dplyr` to illustrate new ways of speeding this up.)
+
+So does average RT relate to revenue or popularity? A fun challenge is using the code shared above to find this. Give it a go.
 
 

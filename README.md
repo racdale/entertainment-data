@@ -291,5 +291,6 @@ Please follow the instructions below to conduct some analysis over film data fro
 
 ### What to Submit on CCLE
 
-Using a Word document, and writing up this assignment as a kind of technical memo, write at least 1 page of text, summarize sentiment analysis [3 points] and how you conducted the analysis in R [3 points], and include a series of graphs showing the results [3 points].
+Using a Word document, and writing up this assignment as a kind of technical memo, write at least 1 page of text, summarize sentiment analysis (feel free to mention LIWC) [4 points] and how you conducted the analysis in R [4 points], and include a series of graphs showing the results [4 points].
 
+Total out of 12 points.

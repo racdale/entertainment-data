@@ -1,6 +1,8 @@
 Science of the Language of
 ![alt text](https://co-mind.org/comm-130/entertain.png "Entertainment Image Fun")
 
+![alt text](https://co-mind.org/comm-130/example.png "Example Analysis")
+
 The goal of this exercise is to get you setup in RStudio and gain some first-hand experience at data science, specifically analysis of language patterns in entertainment-relevant media. In this exercise, I will showcase how to obtain, process, and analyze data about recent films, including data about film revenue and more. Let's begin by installing R and RStudio (you need both).
 
 ## We'll need R and RStudio

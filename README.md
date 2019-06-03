@@ -289,4 +289,7 @@ Please follow the instructions below to conduct some analysis over film data fro
 
 > You are tasked as a consultant to conduct sentiment analysis of film genre. A film production company has requested a quantitative analysis of what film types tend to invoke particular emotional expressions in their overview/descriptions. You use the "nrc" sentiment data set, part of the "tidytext" library in RStudio, and showcase a series of graphs that reveal the "sentiment" of different movie types.
 
-Using a Word document, and writing up this assignment as a kind of technical memo, write at least 1 page of text, summarize sentiment analysis and how you conducted the analysis in R, and include a series of graphs showing the results.
+### What to Submit on CCLE
+
+Using a Word document, and writing up this assignment as a kind of technical memo, write at least 1 page of text, summarize sentiment analysis [3 points] and how you conducted the analysis in R [3 points], and include a series of graphs showing the results [3 points].
+
